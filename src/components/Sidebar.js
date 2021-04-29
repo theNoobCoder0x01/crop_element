@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import * as FaIcons from "react-icons/fa";
-import * as AiIcons from "react-icons/ai";
+import * as FaIcons from 'react-icons/fa';
+import * as AiIcons from 'react-icons/ai';
+import SidebarData from './SidebarData';
+import './Sidebar.css';
 
 function Sidebar() {
 
@@ -13,16 +15,25 @@ function Sidebar() {
         <>
            <div className="sidebar">
                <Link to="#" className="menu-bars">
-                <FaIcons.FaBars onClick={toggleSidebar} />
+                <FaIcons.FaBars style={{ color: '#FFFFFF' }} onClick={toggleSidebar} />
                </Link>
            </div>
            <nav className={"nav-menu" + (sidebar ? " active" : "")}>
-               <ul className="nav-menu-items">
+               <ul id="nav-menu-items" onClick={toggleSidebar}>
                    <li className="sidebar-toggle">
                        <Link to="#" className="menu-bars">
-                           <AiIcons.AiOutlineClose />
+                           <AiIcons.AiOutlineClose style={{ color: '#FFFFFF' }} />
                        </Link>
                    </li>
+                   { SidebarData.map((item, index) => {
+                           return (
+                               <li key={index} className={item.className}>
+                                   <Link to={item.path}>
+                                       <span>{item.title}</span>
+                                   </Link>
+                               </li>
+                           )
+                       }) }
                </ul>
            </nav>
         </>

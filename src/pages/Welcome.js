@@ -1,12 +1,12 @@
 import React from 'react';
 import './text.css';
 
-function CropDiseaseDetection() {
+function Welcome() {
     return (
         <div className="text_for_testing">
-            disease detected, have fun.
+            Hello, Welcome to our app...!!! uwu, OwO.
         </div>
     );
 }
 
-export default CropDiseaseDetection;
+export default Welcome;
