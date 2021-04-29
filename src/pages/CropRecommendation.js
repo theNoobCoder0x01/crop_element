@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './text.css';
+import './CropRecommendation.css';
 
 function CropRecommendation() {
 	const [values, setValues] = useState({
@@ -12,6 +12,8 @@ function CropRecommendation() {
 		"rf": ["0.0", "float"],
 		"crop": ["rice", "string"],
 	});
+
+	const [resultFetched, setResultFetched] = useState(null);
 
 	const handleInputChange = (event) => {
 		const target = event.target;
@@ -26,11 +28,14 @@ function CropRecommendation() {
 		} else {
 			setValues({...values, [name]: [value, "string"]});
 		}
+
+		setResultFetched(null);
 	}
 
 	const onSubmit = () => {
 		var myHeaders = new Headers();
 		myHeaders.append("Content-Type", "application/json");
+		
 		let data = {...values};
 		data["N"] = parseInt(data["N"][0], 10);
 		data["P"] = parseInt(data["P"][0], 10);
@@ -40,9 +45,8 @@ function CropRecommendation() {
 		data["ph"] = parseFloat(data["ph"][0], 10);
 		data["rf"] = parseFloat(data["rf"][0], 10);
 		data["crop"] = data["crop"][0];
-		console.log(data);
+
 		var raw = JSON.stringify(data);
-		console.log(raw);
 		var requestOptions = {
 			method: 'POST',
 			headers: myHeaders,
@@ -52,55 +56,98 @@ function CropRecommendation() {
 
 		fetch("http://127.0.0.1:7373/api/CropRecommendation", requestOptions)
 			.then(response => response.text())
-			.then(result => console.log(result))
+			.then(result => setResultFetched(JSON.parse(result)))
 			.catch(error => console.log('error', error));
 	}
 
+	let crops = [ 'rice', 'maize', 'chickpea', 'kidneybeans', 'pigeonpeas', 'mothbeans', 'mungbean', 'blackgram', 'lentil', 'pomegranate', 'banana', 'mango', 'grapes', 'watermelon', 'muskmelon', 'apple', 'orange', 'papaya', 'coconut', 'cotton', 'jute', 'coffee' ];
+
+	const formElements = [
+		{
+			label: "Nitrogen content:",
+			name: "N"
+		},
+		{
+			label: "Phosphorus content:",
+			name: "P"
+		},
+		{
+			label: "Potassium content:",
+			name: "K"
+		},
+		{
+			label: "Temperature (in degree celsius):",
+			name: "temp"
+		},
+		{
+			label: "Humidity (in percentage):",
+			name: "humidity"
+		},
+		{
+			label: "pH value (in range [0, 14]):",
+			name: "ph"
+		},
+		{
+			label: "Amount of rainfall (in millimeter):",
+			name: "rf"
+		}
+	]
+
+	const resultContent = () => {
+		return resultFetched ? (
+			<>
+				<span {...{color: resultFetched.result ? "green" : "red"}}>
+					{ `${values.crop[0]} is ${resultFetched.result ? "" : "not "}recommended for you.` }
+				</span>
+			</>
+		) : (<></>);
+	}
+
 	return (
-		<div className="text_for_testing">
-			{/* <form onSubmit={onSubmit}> */}
-				<label>
-					Nitrogen content:
-					<input name="N" type="text" value={values.N[0]} onChange={handleInputChange} />
-				</label><br />
-				<label>
-					Phosphorus content:
-					<input name="P" type="text" value={values.P[0]} onChange={handleInputChange} />
-				</label><br />
-				<label>
-					Potassium content:
-					<input name="K" type="text" value={values.K[0]} onChange={handleInputChange} />
-				</label><br />
-				<label>
-					Temperature (in degree celsius):
-					<input name="temp" type="text" value={values.temp[0]} onChange={handleInputChange} />
-				</label><br />
-				<label>
-					Humidity (in percentage):
-					<input name="humidity" type="text" value={values.humidity[0]} onChange={handleInputChange} />
-				</label><br />
-				<label>
-					pH value (in range [0, 14]):
-					<input name="ph" type="text" value={values.ph[0]} onChange={handleInputChange} />
-				</label><br />
-				<label>
-					Amount of rainfall (in millimeter):
-					<input name="rf" type="text" value={values.rf[0]} onChange={handleInputChange} />
-				</label><br />
-				<label>
-					Select crop:
-					<select onChange={handleInputChange} name="crop">
-						<option value="rice" defaultValue>
-							rice
-						</option>
-						<option value="mango">
-							mango
-						</option>
-					</select>
-				</label><br />
-				<button id="submitButton" onClick={onSubmit}>Submit</button>
-			{/* </form> */}
-		</div>
+		<>
+			<div>
+				<table id="form">
+					<tbody>
+					{ formElements.map((element, index) => {
+						return (
+							<tr key={index} className="row">
+								<td  className="text-label">
+									<label> {element.label} </label>
+								</td>
+								<td>
+									<input className="input-field" name={element.name} type="text" value={values[element.name][0]} onChange={handleInputChange} />
+								</td> 
+							</tr>
+						);
+					}) }
+					<tr className="row">
+						<td>
+							<label className="text-label"> Select crop: </label>
+						</td>
+						<td>
+							<select className="input-field" onChange={handleInputChange} name="crop">
+								{ crops.map((crop, index) => {
+									return (
+										<option key={index} value={crop}>
+											{crop}
+										</option>
+									);
+								}) }
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td className="tc">
+							<button id="submitButton" onClick={onSubmit}>Submit</button>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+			<div id="result-div">
+				{resultContent()}
+			</div>
+		</>
 	);
 }
 
