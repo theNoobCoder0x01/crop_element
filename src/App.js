@@ -1,13 +1,17 @@
+import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 import './App.css';
-import Drawer from './Drawer';
-import { Grid } from '@material-ui/core';
+import Sidebar from './components/Sidebar';
 
 function App() {
   return (
-    <div className="rroot">
-      <Drawer />
-      <div className="testdiv">Hello</div>
-    </div>
+    <>
+      <Router>
+        <Sidebar />
+        <Switch>
+          <Route className="active" path="/" />
+        </Switch>
+      </Router>
+    </>
   );
 }
 
