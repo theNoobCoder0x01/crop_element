@@ -1,9 +1,9 @@
 const SidebarData = [
-    {
-        title: "Home",
-        path: "/",
-        className: 'nav-text'
-    },
+    // {
+    //     title: "Home",
+    //     path: "/",
+    //     className: 'nav-text'
+    // },
     {
         title: "Crop Recommendation",
         path: "/crop_recommendation",
@@ -14,11 +14,11 @@ const SidebarData = [
         path: "/crop_disease_detection",
         className: 'nav-text'
     },
-    {
-        title: "Weather Forecast",
-        path: "/weather_forecast",
-        className: 'nav-text'
-    }
+    // {
+    //     title: "Weather Forecast",
+    //     path: "/weather_forecast",
+    //     className: 'nav-text'
+    // }
 ];
 
 export default SidebarData;

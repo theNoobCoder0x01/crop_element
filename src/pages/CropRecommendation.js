@@ -47,6 +47,7 @@ function CropRecommendation() {
 		data["crop"] = data["crop"][0];
 
 		var raw = JSON.stringify(data);
+		// console.log(raw);
 		var requestOptions = {
 			method: 'POST',
 			headers: myHeaders,
@@ -56,48 +57,30 @@ function CropRecommendation() {
 
 		fetch("http://127.0.0.1:7373/api/CropRecommendation", requestOptions)
 			.then(response => response.text())
-			.then(result => setResultFetched(JSON.parse(result)))
+			.then(result => {
+				console.log(JSON.parse(result));
+				setResultFetched(JSON.parse(result))
+			})
 			.catch(error => console.log('error', error));
 	}
 
 	let crops = [ 'rice', 'maize', 'chickpea', 'kidneybeans', 'pigeonpeas', 'mothbeans', 'mungbean', 'blackgram', 'lentil', 'pomegranate', 'banana', 'mango', 'grapes', 'watermelon', 'muskmelon', 'apple', 'orange', 'papaya', 'coconut', 'cotton', 'jute', 'coffee' ];
 
 	const formElements = [
-		{
-			label: "Nitrogen content:",
-			name: "N"
-		},
-		{
-			label: "Phosphorus content:",
-			name: "P"
-		},
-		{
-			label: "Potassium content:",
-			name: "K"
-		},
-		{
-			label: "Temperature (in degree celsius):",
-			name: "temp"
-		},
-		{
-			label: "Humidity (in percentage):",
-			name: "humidity"
-		},
-		{
-			label: "pH value (in range [0, 14]):",
-			name: "ph"
-		},
-		{
-			label: "Amount of rainfall (in millimeter):",
-			name: "rf"
-		}
+		{ label: "Nitrogen content:", name: "N" },
+		{ label: "Phosphorus content:", name: "P" },
+		{ label: "Potassium content:", name: "K" },
+		{ label: "Temperature (in degree celsius):", name: "temp" },
+		{ label: "Humidity (in percentage):", name: "humidity" },
+		{ label: "pH value (in range [0, 14]):", name: "ph" },
+		{ label: "Amount of rainfall (in millimeter):", name: "rf" }
 	]
 
 	const resultContent = () => {
 		return resultFetched ? (
 			<>
 				<span {...{color: resultFetched.result ? "green" : "red"}}>
-					{ `${values.crop[0]} is ${resultFetched.result ? "" : "not "}recommended for you.` }
+					{ `${values.crop[0]} is ${resultFetched.isSuggested === "True" ? "" : "not "}recommended for you.` }
 				</span>
 			</>
 		) : (<></>);
@@ -108,39 +91,39 @@ function CropRecommendation() {
 			<div>
 				<table id="form">
 					<tbody>
-					{ formElements.map((element, index) => {
-						return (
-							<tr key={index} className="row">
-								<td  className="text-label">
-									<label> {element.label} </label>
-								</td>
-								<td>
-									<input className="input-field" name={element.name} type="text" value={values[element.name][0]} onChange={handleInputChange} />
-								</td> 
-							</tr>
-						);
-					}) }
-					<tr className="row">
-						<td>
-							<label className="text-label"> Select crop: </label>
-						</td>
-						<td>
-							<select className="input-field" onChange={handleInputChange} name="crop">
-								{ crops.map((crop, index) => {
-									return (
-										<option key={index} value={crop}>
-											{crop}
-										</option>
-									);
-								}) }
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td className="tc">
-							<button id="submitButton" onClick={onSubmit}>Submit</button>
-						</td>
-					</tr>
+						{ formElements.map((element, index) => {
+							return (
+								<tr key={index} className="row">
+									<td>
+										<label className="text-label"> {element.label} </label>
+									</td>
+									<td>
+										<input className="input-field" name={element.name} type="text" value={values[element.name][0]} onChange={handleInputChange} />
+									</td> 
+								</tr>
+							);
+						}) }
+						<tr className="row">
+							<td>
+								<label className="text-label"> Select crop: </label>
+							</td>
+							<td>
+								<select className="input-field" onChange={handleInputChange} name="crop">
+									{ crops.map((crop, index) => {
+										return (
+											<option key={index} value={crop}>
+												{crop}
+											</option>
+										);
+									}) }
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td className="tc">
+								<button id="submitButton" onClick={onSubmit}>Submit</button>
+							</td>
+						</tr>
 					</tbody>
 				</table>
 			</div>
