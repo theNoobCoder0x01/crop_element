@@ -1,9 +1,9 @@
 const SidebarData = [
-    // {
-    //     title: "Home",
-    //     path: "/",
-    //     className: 'nav-text'
-    // },
+    {
+        title: "Home",
+        path: "/",
+        className: 'nav-text'
+    },
     {
         title: "Crop Recommendation",
         path: "/crop_recommendation",

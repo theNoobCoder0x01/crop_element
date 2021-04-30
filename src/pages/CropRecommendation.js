@@ -89,6 +89,11 @@ function CropRecommendation() {
 	return (
 		<>
 			<div>
+				<div className="title-div">
+					<h1>
+						Crop Recommendation
+					</h1>
+				</div>
 				<table id="form">
 					<tbody>
 						{ formElements.map((element, index) => {

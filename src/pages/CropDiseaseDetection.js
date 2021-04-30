@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
+import './CropDiseaseDetection.css';
 
 function CropDiseaseDetection() {
 
 	const [file, setFile] = useState(null);
 	const [detection, setDetection] = useState({"result":null, "value":-1232894732});
-	const [plantSelected, setPlantSelected] = useState("");
+	const [plantSelected, setPlantSelected] = useState("Apple");
 	
 	const fileChangeHandler = (event) => {
 		setFile(event.target.files[0]);
@@ -59,10 +60,8 @@ function CropDiseaseDetection() {
 	}
 
 	const showDetectionOutput = () => {
-		let output = `${detection["result"]} -- ${detection["value"]}`;
-		return (
-			<><span>{output}</span></>
-		)
+		let output = `Your ${plantSelected} plant ${detection["result"] === "Healthy" ? "is" : "has"} ${detection["result"]}.`;
+		return detection.result ? ( <><span>{output}</span></> ) : (<></>);
 	}
 
 	const plants = ["Apple", "Tomato", "Potato"];
@@ -70,6 +69,11 @@ function CropDiseaseDetection() {
 	return (
 		<>
 			<div>
+				<div className="title-div">
+					<h1>
+						Crop Disease Detection
+					</h1>
+				</div>
 				<table id="form">
 					<tbody>
 						<tr className="row">
@@ -77,8 +81,8 @@ function CropDiseaseDetection() {
 								<label> Choose image file: </label>
 							</td>
 							<td>
-								<input type="file" accept="image/jpeg" onChange={fileChangeHandler} />
-								<button onClick={detectDiseases}>Detect</button>
+								<input className="input-field" type="file" accept="image/jpeg" onChange={fileChangeHandler} />
+								<button id="submitButton" onClick={detectDiseases}>Detect</button>
 							</td>
 						</tr>
 						<tr className="row">
@@ -98,7 +102,7 @@ function CropDiseaseDetection() {
 					</tbody>
 				</table>
 			</div>
-			<div>
+			<div id="result-div">
 				{showDetectionOutput()}
 			</div>
 		</>

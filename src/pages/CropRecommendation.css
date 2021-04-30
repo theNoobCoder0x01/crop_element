@@ -51,3 +51,9 @@
     font-size: xx-large;
     font-weight: bold;
 }
+
+.title-div {
+    margin: 30px;
+    font-family: 'Lato', sans-serif;
+    font-weight: bold;
+}
