@@ -4,6 +4,7 @@ import './CropDiseaseDetection.css';
 function CropDiseaseDetection() {
 
 	const [file, setFile] = useState(null);
+	const [imagePath, setImagePath] = useState("");
 	const [detection, setDetection] = useState({"result":null, "value":-1232894732});
 	const [plantSelected, setPlantSelected] = useState("Apple");
 	
@@ -59,6 +60,10 @@ function CropDiseaseDetection() {
 		};
 	}
 
+	const displayImage = () => {
+		return imagePath != "" ? (<img src={`${imagePath}`} />) : (<></>);
+	}
+
 	const showDetectionOutput = () => {
 		let output = `Your ${plantSelected} plant ${detection["result"] === "Healthy" ? "is" : "has"} ${detection["result"]}.`;
 		return detection.result ? ( <><span>{output}</span></> ) : (<></>);
@@ -103,6 +108,9 @@ function CropDiseaseDetection() {
 				</table>
 			</div>
 			<div id="result-div">
+				<div>
+					{displayImage()}
+				</div>
 				{showDetectionOutput()}
 			</div>
 		</>
