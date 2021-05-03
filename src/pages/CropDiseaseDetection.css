@@ -46,7 +46,7 @@
 }
 
 #result-div {
-    margin-top: 50px;
+    margin-top: 30px;
     font-family: 'Lato', sans-serif;
     font-size: xx-large;
     font-weight: bold;
@@ -56,4 +56,12 @@
     margin: 30px;
     font-family: 'Lato', sans-serif;
     font-weight: bold;
+}
+
+#img.active {
+    width: 300px;
+    height: 300px;
+    margin: 20px;
+    border-radius: 6px;
+    border: none;
 }

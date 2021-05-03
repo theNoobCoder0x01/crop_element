@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './CropRecommendation.css';
 
 function CropRecommendation() {
+	const apiBase = "http://127.0.0.1:7373/api";
 	const [values, setValues] = useState({
 		"N": ["0", "int"],
 		"P": ["0", "int"],
@@ -13,7 +14,7 @@ function CropRecommendation() {
 		"crop": ["rice", "string"],
 	});
 
-	const [resultFetched, setResultFetched] = useState(null);
+	const [resultFetched, setResultFetched] = useState({"fetched": "false"});
 
 	const handleInputChange = (event) => {
 		const target = event.target;
@@ -29,7 +30,7 @@ function CropRecommendation() {
 			setValues({...values, [name]: [value, "string"]});
 		}
 
-		setResultFetched(null);
+		setResultFetched({"fetched": "false"});
 	}
 
 	const onSubmit = () => {
@@ -47,7 +48,6 @@ function CropRecommendation() {
 		data["crop"] = data["crop"][0];
 
 		var raw = JSON.stringify(data);
-		// console.log(raw);
 		var requestOptions = {
 			method: 'POST',
 			headers: myHeaders,
@@ -55,13 +55,16 @@ function CropRecommendation() {
 			redirect: 'follow'
 		};
 
-		fetch("http://127.0.0.1:7373/api/CropRecommendation", requestOptions)
+		fetch(`${apiBase}/CropRecommendation`, requestOptions)
 			.then(response => response.text())
 			.then(result => {
 				console.log(JSON.parse(result));
-				setResultFetched(JSON.parse(result))
+				setResultFetched({"fetched": "true", ...JSON.parse(result)});
 			})
-			.catch(error => console.log('error', error));
+			.catch(error => {
+				console.log('error', error);
+				setResultFetched({"fetched": "error"});
+			});
 	}
 
 	let crops = [ 'rice', 'maize', 'chickpea', 'kidneybeans', 'pigeonpeas', 'mothbeans', 'mungbean', 'blackgram', 'lentil', 'pomegranate', 'banana', 'mango', 'grapes', 'watermelon', 'muskmelon', 'apple', 'orange', 'papaya', 'coconut', 'cotton', 'jute', 'coffee' ];
@@ -77,13 +80,16 @@ function CropRecommendation() {
 	]
 
 	const resultContent = () => {
-		return resultFetched ? (
-			<>
-				<span {...{color: resultFetched.result ? "green" : "red"}}>
-					{ `${values.crop[0]} is ${resultFetched.isSuggested === "True" ? "" : "not "}recommended for you.` }
-				</span>
-			</>
-		) : (<></>);
+		if(resultFetched.fetched === "true") {
+			let output = resultFetched.isSuggested && resultFetched.isSuggested === "True" ?
+						`We are happy to tell you that, growing ${values.crop[0]} is good for your soil conditions.` :
+						`Sadly, ${values.crop[0]} is not good for your soil conditions.`;
+			return ( <> <span> {output } </span> </> );
+		} else if(resultFetched.fetched === "error") {
+			return `Unable to connect to api server.\nSorry for the inconvenience`;
+		} else {
+			return (<></>);
+		}
 	}
 
 	return (

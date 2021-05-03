@@ -46,10 +46,19 @@
 }
 
 #result-div {
-    margin-top: 50px;
+    margin-top: 30px;
     font-family: 'Lato', sans-serif;
     font-size: xx-large;
     font-weight: bold;
+    text-align: justify;
+}
+
+#result-div.red {
+    color: red;
+}
+
+#result-div.green {
+    color: green;
 }
 
 .title-div {

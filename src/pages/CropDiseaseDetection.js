@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import './CropDiseaseDetection.css';
 
 function CropDiseaseDetection() {
-
+	const apiBase = "http://127.0.0.1:7373/api";
 	const [file, setFile] = useState(null);
-	const [imagePath, setImagePath] = useState("");
-	const [detection, setDetection] = useState({"result":null, "value":-1232894732});
+	// let imagePath = "";
+	const [detection, setDetection] = useState({"result":null, "value":-1232894732, "imagePath": ""});
 	const [plantSelected, setPlantSelected] = useState("Apple");
 	
 	const fileChangeHandler = (event) => {
@@ -25,6 +25,8 @@ function CropDiseaseDetection() {
 		let data = undefined
 		reader.onload = (event) => {
 			let img_b64 = event.target.result;
+			let imgPath = event.target.result;
+
 			console.log([1, img_b64]);
 			data = img_b64.substr(img_b64.indexOf(',')+1);
 			console.log([2, data, img_b64]);
@@ -53,19 +55,22 @@ function CropDiseaseDetection() {
 				redirect: 'follow'
 			};
 
-			fetch(`http://127.0.0.1:7373/api/${plantSelected}Prediction`, requestOptions)
+			fetch(`${apiBase}/${plantSelected}Prediction`, requestOptions)
 				.then(response => response.text())
-				.then(result => {console.log(result); setDetection(JSON.parse(result))})
-				.catch(error => console.log('error', error));
+				.then(result => {
+					console.log(result);
+					setDetection({
+						"imagePath": imgPath.substr(0), ...JSON.parse(result)
+					})
+				})
+				.catch(error => {console.log('error', error); setDetection({"imagePath": imgPath.substr(0), "error": "true", "result": "Unable to connect to api server."})});
 		};
 	}
 
-	const displayImage = () => {
-		return imagePath != "" ? (<img src={`${imagePath}`} />) : (<></>);
-	}
-
 	const showDetectionOutput = () => {
-		let output = `Your ${plantSelected} plant ${detection["result"] === "Healthy" ? "is" : "has"} ${detection["result"]}.`;
+		let output = detection.error !== "true" ?
+					`Your ${plantSelected} plant ${detection["result"] === "Healthy" ? "is" : "has"} ${detection["result"]}.` :
+					`Unable to connect to api server.\nSorry for the inconvenience`;
 		return detection.result ? ( <><span>{output}</span></> ) : (<></>);
 	}
 
@@ -108,9 +113,7 @@ function CropDiseaseDetection() {
 				</table>
 			</div>
 			<div id="result-div">
-				<div>
-					{displayImage()}
-				</div>
+				<img id="img" className={detection["imagePath"] === "" ? "" : "active"} src={detection["imagePath"]} alt="Uploaded by user." /> <br />
 				{showDetectionOutput()}
 			</div>
 		</>

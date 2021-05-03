@@ -7,12 +7,14 @@ const SidebarData = [
     {
         title: "Crop Recommendation",
         path: "/crop_recommendation",
-        className: 'nav-text'
+        className: 'nav-text',
+        apiBase: "http://127.0.0.1:7373/api"
     },
     {
         title: "Crop Disease Detection",
         path: "/crop_disease_detection",
-        className: 'nav-text'
+        className: 'nav-text',
+        apiBase: "http://127.0.0.1:7373/api"
     },
     // {
     //     title: "Weather Forecast",
