@@ -19,58 +19,62 @@ function CropDiseaseDetection() {
 	}
 
 	const detectDiseases = () => {
-		console.log(file);
-		let reader = new FileReader();
-		reader.readAsDataURL(file);
-		let data = undefined
-		reader.onload = (event) => {
-			let img_b64 = event.target.result;
-			let imgPath = event.target.result;
+		try {
+			console.log(file);
+			let reader = new FileReader();
+			reader.readAsDataURL(file);
+			let data = undefined
+			reader.onload = (event) => {
+				let img_b64 = event.target.result;
+				let imgPath = event.target.result;
 
-			console.log([1, img_b64]);
-			data = img_b64.substr(img_b64.indexOf(',')+1);
-			console.log([2, data, img_b64]);
-			console.log(["datasent:", data])
+				console.log([1, img_b64]);
+				data = img_b64.substr(img_b64.indexOf(',')+1);
+				console.log([2, data, img_b64]);
+				console.log(["datasent:", data])
 
-			var myHeaders = new Headers();
-			myHeaders.append("Content-Type", "application/json");
-			
-			// let data = {...values};
-			// data["N"] = parseInt(data["N"][0], 10);
-			// data["P"] = parseInt(data["P"][0], 10);
-			// data["K"] = parseInt(data["K"][0], 10);
-			// data["temp"] = parseFloat(data["temp"][0], 10);
-			// data["humidity"] = parseFloat(data["humidity"][0], 10);
-			// data["ph"] = parseFloat(data["ph"][0], 10);
-			// data["rf"] = parseFloat(data["rf"][0], 10);
-			// data["crop"] = data["crop"][0];
+				var myHeaders = new Headers();
+				myHeaders.append("Content-Type", "application/json");
+				
+				// let data = {...values};
+				// data["N"] = parseInt(data["N"][0], 10);
+				// data["P"] = parseInt(data["P"][0], 10);
+				// data["K"] = parseInt(data["K"][0], 10);
+				// data["temp"] = parseFloat(data["temp"][0], 10);
+				// data["humidity"] = parseFloat(data["humidity"][0], 10);
+				// data["ph"] = parseFloat(data["ph"][0], 10);
+				// data["rf"] = parseFloat(data["rf"][0], 10);
+				// data["crop"] = data["crop"][0];
 
-			console.log(data);
-			var raw = JSON.stringify({image: data});
-			console.log(raw);
-			var requestOptions = {
-				method: 'POST',
-				headers: myHeaders,
-				body: raw,
-				redirect: 'follow'
-			};
+				console.log(data);
+				var raw = JSON.stringify({image: data});
+				console.log(raw);
+				var requestOptions = {
+					method: 'POST',
+					headers: myHeaders,
+					body: raw,
+					redirect: 'follow'
+				};
 
-			fetch(`${apiBase}/${plantSelected}Prediction`, requestOptions)
-				.then(response => response.text())
-				.then(result => {
-					console.log(result);
-					setDetection({
-						"imagePath": imgPath.substr(0), ...JSON.parse(result)
+				fetch(`${apiBase}/${plantSelected}Prediction`, requestOptions)
+					.then(response => response.text())
+					.then(result => {
+						console.log(result);
+						setDetection({
+							"imagePath": imgPath.substr(0), ...JSON.parse(result)
+						})
 					})
-				})
-				.catch(error => {console.log('error', error); setDetection({"imagePath": imgPath.substr(0), "error": "true", "result": "Unable to connect to api server."})});
-		};
+					.catch(error => {console.log('error', error); setDetection({"imagePath": imgPath.substr(0), "error": "true", "result": "Unable to connect to api server."})});
+			};
+		} catch {
+			setDetection({"imagePath": "", "error": "true", "result": "Unknown error occured, sorry for the inconvinence."})
+		}
 	}
 
 	const showDetectionOutput = () => {
 		let output = detection.error !== "true" ?
 					`Your ${plantSelected} plant ${detection["result"] === "Healthy" ? "is" : "has"} ${detection["result"]}.` :
-					`Unable to connect to api server.\nSorry for the inconvenience`;
+					`Unable to connect to api server.Sorry for the inconvenience`;
 		return detection.result ? ( <><span>{output}</span></> ) : (<></>);
 	}
 
@@ -113,7 +117,7 @@ function CropDiseaseDetection() {
 				</table>
 			</div>
 			<div id="result-div">
-				<img id="img" className={detection["imagePath"] === "" ? "" : "active"} src={detection["imagePath"]} alt="Uploaded by user." /> <br />
+				<img id="img" className={detection["imagePath"] === "" ? "" : "active"} src={detection["imagePath"]} /> <br />
 				{showDetectionOutput()}
 			</div>
 		</>
