@@ -74,7 +74,7 @@ function CropDiseaseDetection() {
 	const showDetectionOutput = () => {
 		let output = detection.error !== "true" ?
 					`Your ${plantSelected} plant ${detection["result"] === "Healthy" ? "is" : "has"} ${detection["result"]}.` :
-					`Unable to connect to api server.Sorry for the inconvenience`;
+					`Unable to connect to api server. Sorry for the inconvenience`;
 		return detection.result ? ( <><span>{output}</span></> ) : (<></>);
 	}
 
